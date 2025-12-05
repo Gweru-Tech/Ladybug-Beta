@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  ladybug-bot:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - BOT_NAME=LADYBUG BETA
+      - OWNER_NAME=Knight Developer
+      - OWNER_NUMBER=263718456744
+      - AUTO_START=true
+      - AI_ENABLED=true
+      - AI_PROVIDER=openai
+      - AI_API_KEY=${AI_API_KEY}
+      - AUTO_TYPING=true
+      - ALWAYS_ONLINE=true
+      - AUTO_BIO=true
+      - AUTO_STATUS_UPDATE=true
+      - AUTO_LIKE_STATUS=true
+      - AUTO_VIEW_STATUS=true
+      - ANTI_BAN_ENABLED=true
+      - MAX_MESSAGES_PER_MINUTE=10
+      - MAX_MESSAGES_PER_HOUR=60
+    volumes:
+      - ./session:/app/session
+      - ./data:/app/data
+      - ./temp:/app/temp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  # Optional: MongoDB for data persistence
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  mongodb_data:

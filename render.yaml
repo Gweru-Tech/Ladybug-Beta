@@ -1,0 +1,56 @@
+services:
+  # Web Service
+  - type: web
+    name: ladybug-beta-bot
+    env: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: BOT_NAME
+        value: LADYBUG BETA
+      - key: OWNER_NAME
+        value: Knight Developer
+      - key: OWNER_NUMBER
+        value: 263718456744
+      - key: AUTO_START
+        value: true
+      - key: AI_ENABLED
+        value: true
+      - key: AUTO_TYPING
+        value: true
+      - key: ALWAYS_ONLINE
+        value: true
+      - key: AUTO_BIO
+        value: true
+      - key: AUTO_STATUS_UPDATE
+        value: true
+      - key: AUTO_LIKE_STATUS
+        value: true
+      - key: AUTO_VIEW_STATUS
+        value: true
+      - key: ANTI_BAN_ENABLED
+        value: true
+      - key: MAX_MESSAGES_PER_MINUTE
+        value: 10
+      - key: MAX_MESSAGES_PER_HOUR
+        value: 60
+
+# Auto-scaling configuration
+autoscaling:
+  enabled: false
+
+# Disk configuration
+disk:
+  name: ladybug-data
+  mountPath: /app/data
+  sizeGB: 1
+
+# Build optimization
+build:
+  rootDirectory: .
