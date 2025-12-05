@@ -1,5 +1,5 @@
 const { default: makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion, DisconnectReason, delay } = require('@whiskeysockets/baileys');
-const { Boom } = require('@hapi/boom');
+// const { Boom } = require('@hapi/boom');
 const pino = require('pino');
 const chalk = require('chalk');
 const fs = require('fs-extra');
@@ -196,7 +196,7 @@ async function startBot(io, updateStatus) {
             }
             
             if (connection === 'close') {
-                const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
+                const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
                 const statusCode = lastDisconnect?.error?.output?.statusCode;
                 
                 console.log(chalk.red(`❌ Connection closed: ${statusCode}`));
