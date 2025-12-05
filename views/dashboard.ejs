@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐞 LADYBUG BETA - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF1744;
+            --secondary-color: #4CAF50;
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --sidebar-bg: #252525;
+            --text-light: #ffffff;
+            --text-muted: #b0b0b0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: var(--text-light);
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar-bg);
+            padding: 2rem 1rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 23, 68, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .nav-link i {
+            margin-right: 1rem;
+            width: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .content-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: var(--text-muted);
+        }
+        
+        .card-custom {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .form-control-custom {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control-custom:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 23, 68, 0.25);
+            color: var(--text-light);
+        }
+        
+        .form-label-custom {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(45deg, var(--primary-color), #FF6B6B);
+            border: none;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 23, 68, 0.3);
+        }
+        
+        .btn-secondary-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary-custom:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 30px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        
+        .feature-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-info h5 {
+            margin-bottom: 0.25rem;
+        }
+        
+        .feature-info p {
+            margin-bottom: 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .alert-custom {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--text-light);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-custom {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-custom {
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">🐞</div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showTab('settings')">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showTab('ai')">
+                        <i class="fas fa-robot"></i>
+                        AI Config
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showTab('automation')">
+                        <i class="fas fa-magic"></i>
+                        Automation
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showTab('groups')">
+                        <i class="fas fa-users"></i>
+                        Groups
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showTab('analytics')">
+                        <i class="fas fa-chart-bar"></i>
+                        Analytics
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="restartBot()">
+                        <i class="fas fa-sync"></i>
+                        Restart Bot
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Manage your LADYBUG BETA settings and features</p>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🤖</div>
+                    <div class="stat-number" id="botStatus"><%= botStatus === 'connected' ? 'ONLINE' : 'OFFLINE' %></div>
+                    <div class="stat-label">Bot Status</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-number" id="messageCount">0</div>
+                    <div class="stat-label">Messages Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-number" id="userCount">0</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-number" id="uptime">0h</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('overview')">Overview</div>
+                <div class="tab" onclick="showTab('settings')">Settings</div>
+                <div class="tab" onclick="showTab('ai')">AI Configuration</div>
+                <div class="tab" onclick="showTab('automation')">Automation</div>
+                <div class="tab" onclick="showTab('groups')">Group Management</div>
+                <div class="tab" onclick="showTab('analytics')">Analytics</div>
+            </div>
+            
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <div class="card-custom">
+                    <h4>🔧 Quick Actions</h4>
+                    <div class="row mt-3">
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-primary-custom w-100" onclick="restartBot()">
+                                <i class="fas fa-sync"></i> Restart Bot
+                            </button>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-secondary-custom w-100" onclick="exportSettings()">
+                                <i class="fas fa-download"></i> Export Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-custom">
+                    <h4>📊 System Information</h4>
+                    <div class="mt-3">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Memory Usage</span>
+                                <span id="memoryUsage">0%</span>
+                            </div>
+                            <div class="progress-custom">
+                                <div class="progress-bar-custom" id="memoryBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>CPU Usage</span>
+                                <span id="cpuUsage">0%</span>
+                            </div>
+                            <div class="progress-custom">
+                                <div class="progress-bar-custom" id="cpuBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Version</span>
+                                <span>LADYBUG BETA v2.0.0</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Last Update</span>
+                                <span id="lastUpdate">Just now</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Tab -->
+            <div class="tab-content" id="settings">
+                <div class="card-custom">
+                    <h4>⚙️ Bot Settings</h4>
+                    <form id="settingsForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">Bot Name</label>
+                                <input type="text" class="form-control form-control-custom" 
+                                       name="botName" value="<%= settings?.botName || 'LADYBUG BETA' %>">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">Owner Name</label>
+                                <input type="text" class="form-control form-control-custom" 
+                                       name="ownerName" value="<%= settings?.ownerName || 'Knight Developer' %>">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">Owner Number</label>
+                                <input type="text" class="form-control form-control-custom" 
+                                       name="ownerNumber" value="<%= settings?.ownerNumber || '263718456744' %>">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">Command Prefix</label>
+                                <input type="text" class="form-control form-control-custom" 
+                                       name="prefix" value="<%= settings?.prefix || '.' %>">
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4 mb-3">Feature Toggles</h5>
+                        <div class="feature-toggle">
+                            <div class="feature-info">
+                                <h5>Public Mode</h5>
+                                <p>Allow anyone to use the bot</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="publicMode" <%= settings?.publicMode ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="feature-toggle">
+                            <div class="feature-info">
+                                <h5>Auto Typing</h5>
+                                <p>Simulate typing when responding</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="autoTyping" <%= settings?.autoTyping ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="feature-toggle">
+                            <div class="feature-info">
+                                <h5>Always Online</h5>
+                                <p>Keep bot online 24/7</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="alwaysOnline" <%= settings?.alwaysOnline ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="fas fa-save"></i> Save Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- AI Configuration Tab -->
+            <div class="tab-content" id="ai">
+                <div class="card-custom">
+                    <h4>🤖 AI Configuration</h4>
+                    <form id="aiForm">
+                        <div class="feature-toggle">
+                            <div class="feature-info">
+                                <h5>Enable AI Chat</h5>
+                                <p>Allow users to chat with AI</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="aiEnabled" <%= settings?.aiEnabled ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">AI Provider</label>
+                                <select class="form-control form-control-custom" name="aiProvider">
+                                    <option value="openai" <%= settings?.aiProvider === 'openai' ? 'selected' : '' %>>OpenAI GPT</option>
+                                    <option value="gemini" <%= settings?.aiProvider === 'gemini' ? 'selected' : '' %>>Google Gemini</option>
+                                    <option value="custom" <%= settings?.aiProvider === 'custom' ? 'selected' : '' %>>Custom API</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">AI Personality</label>
+                                <select class="form-control form-control-custom" name="aiPersonality">
+                                    <option value="friendly" <%= settings?.aiPersonality === 'friendly' ? 'selected' : '' %>>Friendly</option>
+                                    <option value="professional" <%= settings?.aiPersonality === 'professional' ? 'selected' : '' %>>Professional</option>
+                                    <option value="funny" <%= settings?.aiPersonality === 'funny' ? 'selected' : '' %>>Funny</option>
+                                    <option value="smart" <%= settings?.aiPersonality === 'smart' ? 'selected' : '' %>>Smart</option>
+                                    <option value="romantic" <%= settings?.aiPersonality === 'romantic' ? 'selected' : '' %>>Romantic</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label-custom">API Key</label>
+                                <input type="password" class="form-control form-control-custom" 
+                                       name="aiApiKey" value="<%= settings?.aiApiKey || '' %>"
+                                       placeholder="Enter your API key">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom">Model</label>
+                                <input type="text" class="form-control form-control-custom" 
+                                       name="aiModel" value="<%= settings?.aiModel || 'gpt-3.5-turbo' %>">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="fas fa-save"></i> Save AI Settings
+                            </button>
+                            <button type="button" class="btn btn-secondary-custom ms-2" onclick="testAI()">
+                                <i class="fas fa-flask"></i> Test AI
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Automation Tab -->
+            <div class="tab-content" id="automation">
+                <div class="card-custom">
+                    <h4>🔮 Automation Features</h4>
+                    <div class="feature-toggle">
+                        <div class="feature-info">
+                            <h5>Auto Bio Updates</h5>
+                            <p>Automatically update bot bio</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="autoBio" <%= settings?.autoBio ? 'checked' : '' %>>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="feature-toggle">
+                        <div class="feature-info">
+                            <h5>Auto Status Updates</h5>
+                            <p>Automatically post status updates</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="autoStatusUpdate" <%= settings?.autoStatusUpdate ? 'checked' : '' %>>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="feature-toggle">
+                        <div class="feature-info">
+                            <h5>Auto Like Status</h5>
+                            <p>Automatically like contacts' statuses</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="autoLikeStatus" <%= settings?.autoLikeStatus ? 'checked' : '' %>>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="feature-toggle">
+                        <div class="feature-info">
+                            <h5>Auto View Status</h5>
+                            <p>Automatically view contacts' statuses</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="autoViewStatus" <%= settings?.autoViewStatus ? 'checked' : '' %>>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="feature-toggle">
+                        <div class="feature-info">
+                            <h5>Group Welcome Messages</h5>
+                            <p>Send welcome messages to new members</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" name="groupWelcome" <%= settings?.groupWelcome ? 'checked' : '' %>>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Groups Tab -->
+            <div class="tab-content" id="groups">
+                <div class="card-custom">
+                    <h4>👥 Group Management</h4>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label-custom">Welcome Message</label>
+                            <textarea class="form-control form-control-custom" rows="4" 
+                                      name="welcomeMessage"><%= settings?.welcomeMessage || '' %></textarea>
+                            <small class="text-muted">Use @user for user mention, @groupName for group name</small>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label-custom">Goodbye Message</label>
+                            <textarea class="form-control form-control-custom" rows="3" 
+                                      name="goodbyeMessage"><%= settings?.goodbyeMessage || '' %></textarea>
+                            <small class="text-muted">Use @user for user mention</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Analytics Tab -->
+            <div class="tab-content" id="analytics">
+                <div class="card-custom">
+                    <h4>📈 Analytics & Statistics</h4>
+                    <div class="alert-custom">
+                        <i class="fas fa-info-circle"></i> Analytics data is updated every 5 minutes
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3 class="text-primary">0</h3>
+                                <p class="text-muted">Total Messages</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3 class="text-success">0</h3>
+                                <p class="text-muted">Commands Used</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3 class="text-warning">0</h3>
+                                <p class="text-muted">AI Chats</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Settings form submission
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const settings = Object.fromEntries(formData);
+            
+            // Convert checkboxes to boolean
+            Object.keys(settings).forEach(key => {
+                if (settings[key] === 'on') settings[key] = true;
+                if (settings[key] === undefined) settings[key] = false;
+            });
+            
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Settings saved successfully!', 'success');
+                } else {
+                    showAlert(result.error, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error saving settings', 'danger');
+            }
+        });
+        
+        // AI form submission
+        document.getElementById('aiForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const aiSettings = Object.fromEntries(formData);
+            
+            // Convert checkboxes to boolean
+            Object.keys(aiSettings).forEach(key => {
+                if (aiSettings[key] === 'on') aiSettings[key] = true;
+                if (aiSettings[key] === undefined) aiSettings[key] = false;
+            });
+            
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(aiSettings)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('AI settings saved successfully!', 'success');
+                } else {
+                    showAlert(result.error, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error saving AI settings', 'danger');
+            }
+        });
+        
+        // Test AI connection
+        async function testAI() {
+            showAlert('Testing AI connection...', 'info');
+            
+            try {
+                const response = await fetch('/api/test-ai', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('AI connection successful!', 'success');
+                } else {
+                    showAlert('AI connection failed: ' + result.error, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error testing AI connection', 'danger');
+            }
+        }
+        
+        // Restart bot
+        async function restartBot() {
+            if (confirm('Are you sure you want to restart the bot?')) {
+                showAlert('Restarting bot...', 'info');
+                
+                try {
+                    const response = await fetch('/api/restart', { method: 'POST' });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showAlert('Bot is restarting...', 'success');
+                    } else {
+                        showAlert('Failed to restart bot: ' + result.error, 'danger');
+                    }
+                } catch (error) {
+                    showAlert('Error restarting bot', 'danger');
+                }
+            }
+        }
+        
+        // Export settings
+        async function exportSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                const settings = await response.json();
+                
+                const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'ladybug-settings.json';
+                a.click();
+                
+                showAlert('Settings exported successfully!', 'success');
+            } catch (error) {
+                showAlert('Error exporting settings', 'danger');
+            }
+        }
+        
+        // Show alert
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert-custom alert-${type}`;
+            alert.innerHTML = message;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '9999';
+            alert.style.maxWidth = '300px';
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+        
+        // Update stats
+        function updateStats() {
+            // Simulate stats updates
+            document.getElementById('messageCount').textContent = 
+                Math.floor(Math.random() * 1000);
+            document.getElementById('userCount').textContent = 
+                Math.floor(Math.random() * 100);
+            
+            // Update uptime
+            const uptime = Math.floor(Math.random() * 24);
+            document.getElementById('uptime').textContent = `${uptime}h`;
+            
+            // Update memory usage
+            const memoryUsage = Math.floor(Math.random() * 80);
+            document.getElementById('memoryUsage').textContent = `${memoryUsage}%`;
+            document.getElementById('memoryBar').style.width = `${memoryUsage}%`;
+            
+            // Update CPU usage
+            const cpuUsage = Math.floor(Math.random() * 60);
+            document.getElementById('cpuUsage').textContent = `${cpuUsage}%`;
+            document.getElementById('cpuBar').style.width = `${cpuUsage}%`;
+        }
+        
+        // Initialize
+        updateStats();
+        setInterval(updateStats, 30000); // Update every 30 seconds
+        
+        // Update last update time
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 
+                now.toLocaleTimeString();
+        }, 60000);
+    </script>
+</body>
+</html>

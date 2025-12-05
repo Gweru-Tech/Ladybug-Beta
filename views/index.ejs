@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐞 LADYBUG BETA - WhatsApp Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF1744;
+            --secondary-color: #4CAF50;
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-light: #ffffff;
+            --text-muted: #b0b0b0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+        
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23FF1744" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,128C672,107,768,85,864,96C960,107,1056,149,1152,154.7C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            opacity: 0.3;
+        }
+        
+        .main-card {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .bot-logo {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .bot-title {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .bot-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: blink 1s infinite;
+        }
+        
+        .status-dot.connected { background-color: var(--secondary-color); }
+        .status-dot.connecting { background-color: #FFC107; }
+        .status-dot.disconnected { background-color: #f44336; }
+        .status-dot.error { background-color: #9C27B0; }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .qr-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: none;
+        }
+        
+        .qr-code {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pairing-code {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--text-light);
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(45deg, var(--primary-color), #FF6B6B);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 23, 68, 0.3);
+        }
+        
+        .btn-secondary-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-secondary-custom:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 2rem;
+        }
+        
+        .feature-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-item i {
+            color: var(--secondary-color);
+            margin-right: 1rem;
+            width: 20px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .alert-custom {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--text-light);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="hero-background"></div>
+        
+        <div class="main-card">
+            <div class="bot-logo">🐞</div>
+            <h1 class="bot-title">LADYBUG BETA</h1>
+            <p class="bot-subtitle">Advanced WhatsApp Bot with AI & Automation</p>
+            
+            <div class="status-indicator">
+                <div class="status-dot <%= status %>" id="statusDot"></div>
+                <span id="statusText">
+                    <% if (status === 'connected') { %>
+                        🟢 Connected & Online
+                    <% } else if (status === 'connecting') { %>
+                        🔄 Connecting...
+                    <% } else if (status === 'disconnected') { %>
+                        🔴 Disconnected
+                    <% } else if (status === 'error') { %>
+                        🟣 Connection Error
+                    <% } else { %>
+                        ⚪ Ready to Connect
+                    <% } %>
+                </span>
+            </div>
+            
+            <div class="qr-container" id="qrContainer">
+                <p class="text-muted mb-3">Scan this QR code with WhatsApp</p>
+                <div class="qr-code" id="qrCode">
+                    <% if (qrCode) { %>
+                        <img src="<%= qrCode %>" alt="QR Code" style="max-width: 256px;">
+                    <% } %>
+                </div>
+            </div>
+            
+            <div class="pairing-code" id="pairingCode">
+                <% if (pairingCode) { %>
+                    <strong>Pairing Code:</strong><br>
+                    <%= pairingCode %>
+                    <br><br>
+                    <small class="text-muted">Enter this code in WhatsApp > Linked Devices</small>
+                <% } %>
+            </div>
+            
+            <div id="alertContainer"></div>
+            
+            <div class="button-group">
+                <% if (status === 'connected') { %>
+                    <button class="btn btn-secondary-custom" onclick="stopBot()">
+                        <i class="fas fa-stop"></i> Stop Bot
+                    </button>
+                    <a href="/dashboard" class="btn btn-primary-custom">
+                        <i class="fas fa-cog"></i> Dashboard
+                    </a>
+                <% } else if (status === 'connecting') { %>
+                    <button class="btn btn-secondary-custom" disabled>
+                        <div class="loading-spinner"></div> Connecting...
+                    </button>
+                <% } else { %>
+                    <button class="btn btn-primary-custom" onclick="startBot()">
+                        <i class="fas fa-play"></i> Start Bot
+                    </button>
+                    <button class="btn btn-secondary-custom" onclick="showPairingCode()">
+                        <i class="fas fa-key"></i> Use Pairing Code
+                    </button>
+                <% } %>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Online</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">AI</div>
+                    <div class="stat-label">Powered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Commands</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number"><%= settings?.aiEnabled ? 'ON' : 'OFF' %></div>
+                    <div class="stat-label">AI Chat</div>
+                </div>
+            </div>
+            
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Chat with Multiple Personalities</span>
+                </li>
+                <li class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Advanced Anti-Ban Protection</span>
+                </li>
+                <li class="feature-item">
+                    <i class="fas fa-users"></i>
+                    <span>Group Management & Automation</span>
+                </li>
+                <li class="feature-item">
+                    <i class="fas fa-magic"></i>
+                    <span>Auto Typing, Bio & Status Updates</span>
+                </li>
+                <li class="feature-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Auto Like/View Status</span>
+                </li>
+                <li class="feature-item">
+                    <i class="fas fa-palette"></i>
+                    <span>Customizable Themes & Settings</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        
+        // Socket events
+        socket.on('status', (data) => {
+            updateStatus(data.status, data);
+        });
+        
+        socket.on('error', (error) => {
+            showAlert(error, 'danger');
+        });
+        
+        function updateStatus(status, data = {}) {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const qrContainer = document.getElementById('qrContainer');
+            const qrCode = document.getElementById('qrCode');
+            const pairingCode = document.getElementById('pairingCode');
+            
+            statusDot.className = `status-dot ${status}`;
+            
+            switch(status) {
+                case 'connected':
+                    statusText.innerHTML = '🟢 Connected & Online';
+                    qrContainer.style.display = 'none';
+                    pairingCode.style.display = 'none';
+                    break;
+                case 'connecting':
+                    statusText.innerHTML = '🔄 Connecting...';
+                    qrContainer.style.display = 'none';
+                    pairingCode.style.display = 'none';
+                    break;
+                case 'disconnected':
+                    statusText.innerHTML = '🔴 Disconnected';
+                    qrContainer.style.display = 'none';
+                    pairingCode.style.display = 'none';
+                    break;
+                case 'error':
+                    statusText.innerHTML = '🟣 Connection Error';
+                    qrContainer.style.display = 'none';
+                    pairingCode.style.display = 'none';
+                    break;
+                case 'qr':
+                    statusText.innerHTML = '📱 QR Code Ready';
+                    qrContainer.style.display = 'block';
+                    if (data.qr) {
+                        qrCode.innerHTML = `<img src="${data.qr}" alt="QR Code" style="max-width: 256px;">`;
+                    }
+                    break;
+            }
+            
+            // Update page content without reload
+            location.reload();
+        }
+        
+        function startBot() {
+            socket.emit('start-bot');
+            showAlert('Starting bot...', 'info');
+        }
+        
+        function stopBot() {
+            if (confirm('Are you sure you want to stop the bot?')) {
+                socket.emit('stop-bot');
+                showAlert('Stopping bot...', 'warning');
+            }
+        }
+        
+        function showPairingCode() {
+            const phoneNumber = prompt('Enter your WhatsApp number (with country code, no +):');
+            if (phoneNumber) {
+                fetch('/api/pairing-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('pairingCode').innerHTML = 
+                            `<strong>Pairing Code:</strong><br>${data.code}<br><br>
+                             <small class="text-muted">Enter this code in WhatsApp > Linked Devices</small>`;
+                        document.getElementById('pairingCode').style.display = 'block';
+                    } else {
+                        showAlert(data.error, 'danger');
+                    }
+                })
+                .catch(error => showAlert('Error getting pairing code', 'danger'));
+            }
+        }
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert-custom alert-${type}`;
+            alert.innerHTML = message;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+        
+        // Auto-refresh status every 10 seconds
+        setInterval(() => {
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => updateStatus(data.status, data));
+        }, 10000);
+    </script>
+</body>
+</html>
