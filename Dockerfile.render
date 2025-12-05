@@ -3,24 +3,27 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies for media processing
 RUN apk add --no-cache \
     ffmpeg \
     imagemagick \
     curl \
+    python3 \
+    make \
+    g++ \
     && rm -rf /var/cache/apk/*
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --omit=dev
+# Install dependencies with verbose output
+RUN npm install --verbose
 
 # Copy source code
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p session temp data
+RUN mkdir -p session data temp
 
 # Set permissions
 RUN chown -R node:node /app
